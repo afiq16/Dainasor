@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Chrome Dino: Heartbreak to Empire 🦖💔💼</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Hind+Siliguri:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=4.0">
+</head>
+<body>
+  <div id="game-container">
+    <!-- Top HUD Bar -->
+    <header id="hud">
+      <div class="hud-left">
+        <span class="badge" id="mode-badge">RUNNING FOR LOVE 🌹</span>
+        <button id="btn-sound" class="btn-icon" title="Toggle Sound">🔊</button>
+        <button id="btn-fullscreen" class="btn-icon" title="Toggle Fullscreen">⛶</button>
+        <button id="btn-skip-rose" class="btn-sm" title="Skip to 800 Rose Test">⚡ 800 Rose</button>
+        <button id="btn-skip" class="btn-sm" title="Skip to 1000 Story Test">⚡ 1000 Story</button>
+      </div>
+      <div class="hud-right">
+        <div class="score-box">
+          <span class="score-label">HI</span>
+          <span id="high-score">00000</span>
+          <span class="score-label" style="margin-left: 12px;">SCORE</span>
+          <span id="current-score">00000</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Game Canvas -->
+    <div id="canvas-wrapper">
+      <canvas id="gameCanvas" width="900" height="300"></canvas>
+      
+      <!-- Viral Reel Caption (As in the photo) -->
+      <div id="reel-caption" class="reel-caption hidden">
+        "I thought that if I won, I would..."
+      </div>
+
+      <!-- Clean In-Game Story Keys (< and C) -->
+      <div id="story-controls-hud" class="story-controls-hud hidden">
+        <button id="btn-key-back" class="story-key-btn btn-key-die" title="Press < or Left Arrow">
+          <span class="key-box">&lt;</span>
+          <span class="key-label">পেছনে ফিরে শেষ হওয়া (Give up & Die 🥀)</span>
+        </button>
+        <button id="btn-key-career" class="story-key-btn btn-key-career" title="Press C or Right Arrow / Space">
+          <span class="key-box">C</span>
+          <span class="key-label">সামনে এগিয়ে ক্যারিয়ার গড়া (Move Forward 💼✨)</span>
+        </button>
+      </div>
+
+      <!-- Start Screen Overlay (Hidden by default for instant auto-play) -->
+      <div id="start-overlay" class="game-overlay hidden">
+        <div class="overlay-card">
+          <h1 class="pixel-title">T-REX STORY 🦖</h1>
+          <p class="subtitle-bn">১০০০ স্কোর করে গোলাপ নিয়ে প্রেমিকার কাছে যাও...</p>
+          <p class="instruction">
+            <span class="key">SPACE</span> / <span class="key">▲</span> / <span class="key">TAP</span> = Jump &nbsp;|&nbsp; 
+            <span class="key">▼</span> = Duck
+          </p>
+          <button id="btn-start" class="btn-action pulse">START GAME 🏃💨</button>
+        </div>
+      </div>
+
+      <!-- Chapter Closed Screen -->
+      <div id="chapter-closed-overlay" class="game-overlay hidden">
+        <div class="overlay-card sad-card">
+          <h1 class="sad-title">CHAPTER CLOSED 💔</h1>
+          <p class="sad-quote">"কিছু গল্প হয়তো অসম্পূর্ণ থাকাই নিয়তি..."</p>
+          <p class="sad-sub">&lt; চেপে পেছনে ফিরতে গিয়ে ডাইনোসরটি গাছে আছড়ে পড়ে নিথর হয়ে গেল... 🥀</p>
+          <div class="end-actions">
+            <button id="btn-restart-die" class="btn-action">TRY AGAIN 🔄</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Career Victory Screen (Sigma Ending) -->
+      <div id="career-victory-overlay" class="game-overlay hidden">
+        <div class="overlay-card victory-card">
+          <div class="trophy-anim">🏆👑🏢🚀🏎️</div>
+          <h1 class="victory-title">EMPIRE BUILT! YOU WON IN LIFE!</h1>
+          <p class="victory-quote">"C চেপে তুমি গড়ে তুলেছ বিলিয়ন ডলারের সাম্রাজ্য!"</p>
+          
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-num" id="final-wealth">$999,999,999+</span>
+              <span class="stat-lbl">Net Worth</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">BILLIONAIRE CEO</span>
+              <span class="stat-lbl">Status</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">OVER 9000</span>
+              <span class="stat-lbl">Sigma Aura</span>
+            </div>
+          </div>
+
+          <p class="victory-footer">যে হারিয়েছে সে আফসোসে পুড়ুক, তুমি আজ সাফল্যের শিখরে! 🔥</p>
+          <button id="btn-restart-win" class="btn-action btn-gold">PLAY AGAIN 🦖✨</button>
+        </div>
+      </div>
+
+      <!-- Game Over Overlay -->
+      <div id="gameover-overlay" class="game-overlay hidden">
+        <div class="overlay-card">
+          <h2 class="pixel-title">GAME OVER</h2>
+          <p class="subtitle-bn">১০০০ স্কোরে পৌঁছানোর আগেই হোঁচট খেলে!</p>
+          <p class="score-display">Final Score: <span id="gameover-score">0</span></p>
+          <button id="btn-restart-normal" class="btn-action pulse">RETRY 🔄</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Touch Controls -->
+    <div id="mobile-controls">
+      <button id="btn-touch-duck" class="touch-btn">▼ DUCK</button>
+      <button id="btn-touch-jump" class="touch-btn touch-btn-primary">▲ JUMP</button>
+    </div>
+
+    <!-- Footer -->
+    <footer id="game-footer">
+      <span>💡 ৮০০ স্কোরে গোলাপ পাবে, ১০০০ স্কোরে প্রেমিকার সাথে দেখা হবে... দৃশ্যটি দেখে <b>&lt;</b> চাপলে মরে যাবে, <b>C</b> চাপলে ক্যারিয়ার গড়বে!</span>
+    </footer>
+  </div>
+
+  <script src="game.js?v=4.0"></script>
+</body>
+</html>

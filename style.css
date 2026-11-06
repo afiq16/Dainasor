@@ -1,0 +1,608 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+  background: #f7f7f7;
+  color: #535353;
+  font-family: 'Press Start 2P', 'Hind Siliguri', monospace;
+  touch-action: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+#game-container {
+  width: 100vw;
+  height: 100dvh;
+  max-width: 100%;
+  background: #f7f7f7;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: background 0.4s ease;
+}
+
+/* Career / Sigma Theme */
+#game-container.sigma-theme {
+  background: #0f172a;
+}
+
+/* Sad Theme */
+#game-container.sad-theme {
+  background: #f7f7f7;
+}
+
+/* HUD Header */
+#hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #f7f7f7;
+  border-bottom: 2px solid #e5e7eb;
+  font-size: 9px;
+  z-index: 20;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+.sigma-theme #hud {
+  background: #1e293b;
+  border-bottom: 2px solid #334155;
+  color: #fbbf24;
+}
+
+.sad-theme #hud {
+  background: #f7f7f7;
+  border-bottom: 2px solid #e5e7eb;
+  color: #535353;
+}
+
+.hud-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  background: #535353;
+  color: #ffffff;
+  padding: 4px 7px;
+  border-radius: 4px;
+  font-size: 7.5px;
+  white-space: nowrap;
+}
+
+.sigma-theme .badge {
+  background: #f59e0b;
+  color: #000;
+  font-weight: bold;
+}
+
+.btn-icon {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 4px 6px;
+  cursor: pointer;
+  font-size: 11px;
+  touch-action: manipulation;
+}
+
+.btn-sm {
+  background: #535353;
+  color: white;
+  border: none;
+  padding: 5px 7px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 7.5px;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-sm:hover, .btn-sm:active {
+  background: #2563eb;
+}
+
+.hud-right {
+  flex-shrink: 0;
+}
+
+.score-box {
+  letter-spacing: 1.5px;
+  color: #535353;
+  font-weight: bold;
+  font-size: 9px;
+  white-space: nowrap;
+}
+.sigma-theme .score-box {
+  color: #fbbf24;
+}
+
+.score-label {
+  color: #9ca3af;
+  font-size: 7.5px;
+  margin-right: 2px;
+}
+
+/* Canvas Area */
+#canvas-wrapper {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  background: #f7f7f7;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.sigma-theme #canvas-wrapper {
+  background: #0f172a;
+}
+.sad-theme #canvas-wrapper {
+  background: #f7f7f7;
+}
+
+#gameCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+/* Reel Caption (Top Positioned) */
+.reel-caption {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.88);
+  color: #ffffff;
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-size: clamp(10px, 3vw, 13px);
+  font-style: italic;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+  z-index: 20;
+  font-family: 'Hind Siliguri', sans-serif;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.35);
+  animation: fadeIn 0.4s ease forwards;
+  max-width: 92%;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Clean Story Controls (< and C buttons placed at TOP for unobstructed gameplay) */
+.story-controls-hud {
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 25;
+  transition: all 0.3s ease;
+  width: 95%;
+  max-width: 580px;
+  justify-content: center;
+}
+
+.story-controls-hud.hidden {
+  display: none !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.story-controls-hud.fade-in-slide {
+  animation: slideDownFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideDownFade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.story-key-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(24, 24, 27, 0.96);
+  border: 2px solid #535353;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Hind Siliguri', sans-serif;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  touch-action: manipulation;
+  flex: 1;
+  justify-content: center;
+}
+
+.story-key-btn:hover, .story-key-btn:active {
+  transform: scale(1.02);
+}
+
+.key-box {
+  background: #f3f4f6;
+  color: #111827;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 3px 6px;
+  border-radius: 4px;
+  border-bottom: 2px solid #9ca3af;
+  flex-shrink: 0;
+}
+
+.key-label {
+  font-size: 11.5px;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.btn-key-die {
+  border-color: #ef4444;
+}
+.btn-key-die:hover, .btn-key-die:active {
+  background: rgba(185, 28, 28, 0.95);
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.5);
+}
+
+.btn-key-career {
+  border-color: #f59e0b;
+}
+.btn-key-career:hover, .btn-key-career:active {
+  background: rgba(180, 83, 9, 0.95);
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+}
+
+/* Overlays */
+.game-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 30;
+  backdrop-filter: blur(4px);
+  padding: 12px;
+}
+
+.game-overlay.hidden {
+  display: none !important;
+}
+
+.overlay-card {
+  background: #ffffff;
+  padding: 20px 24px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 480px;
+  width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pixel-title {
+  font-size: 14px;
+  color: #111827;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.subtitle-bn {
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: 14px;
+  color: #4b5563;
+  margin-bottom: 14px;
+  font-weight: bold;
+}
+
+.instruction {
+  font-size: 8px;
+  color: #6b7280;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.key {
+  background: #e5e7eb;
+  padding: 3px 6px;
+  border-radius: 4px;
+  color: #111827;
+  border-bottom: 2px solid #9ca3af;
+  display: inline-block;
+  margin: 1px;
+}
+
+.btn-action {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+  touch-action: manipulation;
+  transition: all 0.2s;
+}
+.btn-action:hover, .btn-action:active {
+  background: #1d4ed8;
+  transform: scale(1.02);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #000;
+  font-weight: bold;
+}
+
+/* Sad Screen */
+.sad-card {
+  background: #18181b;
+  color: #ffffff;
+  border: 1px solid #3f3f46;
+}
+.sad-title {
+  font-size: 15px;
+  color: #ef4444;
+  margin-bottom: 10px;
+}
+.sad-quote {
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: 15px;
+  color: #cbd5e1;
+  font-style: italic;
+  margin-bottom: 12px;
+}
+.sad-sub {
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 16px;
+}
+
+/* Victory Screen */
+.victory-card {
+  background: #0f172a;
+  color: #fff;
+  border: 2px solid #fbbf24;
+  box-shadow: 0 0 50px rgba(251, 191, 36, 0.4);
+}
+.trophy-anim {
+  font-size: 26px;
+  margin-bottom: 8px;
+  letter-spacing: 4px;
+  animation: bounce 1.4s infinite;
+}
+.victory-title {
+  font-size: 12px;
+  color: #fbbf24;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+.victory-quote {
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: #6ee7b7;
+  margin-bottom: 14px;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.stat-item {
+  background: rgba(255, 255, 255, 0.06);
+  padding: 8px 4px;
+  border-radius: 8px;
+}
+.stat-num {
+  display: block;
+  font-size: 8.5px;
+  color: #fbbf24;
+  margin-bottom: 4px;
+}
+.stat-lbl {
+  font-size: 9px;
+  color: #cbd5e1;
+}
+.victory-footer {
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: 13px;
+  color: #e2e8f0;
+  margin-bottom: 14px;
+}
+
+/* Mobile Controls */
+#mobile-controls {
+  display: none;
+  padding: 8px 12px;
+  background: #f7f7f7;
+  border-top: 1px solid #d1d5db;
+  gap: 8px;
+  flex-shrink: 0;
+  z-index: 15;
+}
+
+.touch-btn {
+  flex: 1;
+  padding: 13px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  background: #535353;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.touch-btn-primary {
+  background: #2563eb;
+  flex: 2;
+}
+.touch-btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+/* Footer */
+#game-footer {
+  padding: 6px 10px;
+  text-align: center;
+  font-family: 'Hind Siliguri', sans-serif;
+  font-size: 11px;
+  color: #6b7280;
+  background: #f3f4f6;
+  border-top: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+.sigma-theme #game-footer {
+  background: #0f172a;
+  color: #94a3b8;
+  border-top-color: #1e293b;
+}
+
+/* Animations */
+@keyframes popIn {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translate(-50%, -8px); }
+  100% { opacity: 1; transform: translate(-50%, 0); }
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Mobile Media Queries */
+@media (max-width: 768px) {
+  #mobile-controls {
+    display: flex;
+  }
+  .reel-caption {
+    top: 6px;
+    font-size: 11px;
+    padding: 4px 12px;
+  }
+  .story-controls-hud {
+    top: 36px;
+    bottom: auto;
+    flex-direction: row;
+    gap: 6px;
+    width: 96%;
+    max-width: 540px;
+  }
+  .story-key-btn {
+    width: auto;
+    flex: 1;
+    padding: 6px 8px;
+    justify-content: center;
+  }
+  .key-box {
+    font-size: 9px;
+    padding: 2px 5px;
+  }
+  .key-label {
+    font-size: 10px;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  #hud {
+    padding: 6px 8px;
+  }
+  .hud-left {
+    gap: 4px;
+  }
+  .badge {
+    font-size: 6.5px;
+    padding: 3px 5px;
+  }
+  .btn-sm {
+    font-size: 6.5px;
+    padding: 4px 5px;
+  }
+  .btn-icon {
+    padding: 3px 5px;
+    font-size: 10px;
+  }
+  .score-box {
+    font-size: 7.5px;
+    letter-spacing: 1px;
+  }
+  .score-label {
+    font-size: 6.5px;
+  }
+  #game-footer {
+    font-size: 9.5px;
+    padding: 4px 6px;
+  }
+  .reel-caption {
+    top: 5px;
+    font-size: 9.5px;
+    padding: 3px 10px;
+    max-width: 95%;
+  }
+  .story-controls-hud {
+    top: 32px;
+    bottom: auto;
+    flex-direction: row;
+    gap: 4px;
+    width: 98%;
+  }
+  .story-key-btn {
+    padding: 5px 6px;
+  }
+  .key-box {
+    font-size: 8px;
+    padding: 2px 4px;
+  }
+  .key-label {
+    font-size: 8.5px;
+  }
+  .touch-btn {
+    padding: 11px;
+    font-size: 10px;
+  }
+}
